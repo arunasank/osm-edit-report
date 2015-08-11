@@ -44,12 +44,6 @@
     return str;
   }
 
-  Date.prototype.addDays = function(days) {
-    var dat = new Date(this.valueOf())
-    dat.setDate(dat.getDate() + days);
-    return dat;
-  }
-
   function draw_line(data){
     var margin = {
       top: 20,
