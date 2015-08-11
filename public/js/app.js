@@ -162,11 +162,11 @@
       .on("mouseover", mouseover)
       .on("mouseout", mouseout);
 
-      d3.select('.xAxis')
+      d3.select('.x')
       .selectAll('.tick.major')
       .on('mouseover',tickMouseover)
 
-      d3.select('.xAxis')
+      d3.select('.x')
       .selectAll('.tick.major')
       .on('mouseout',tickMouseout)
 
