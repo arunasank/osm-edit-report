@@ -22,7 +22,7 @@
     else {
         type = 'd';
         end_str = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-        today.setDate(today.getDate() - 8);
+        today.setDate(today.getDate() - 7);
         start_str = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
         dates.push(type);
         dates.push(start_str);
