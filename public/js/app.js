@@ -44,13 +44,15 @@
     return str;
   }
 
-  function draw_line(data){
+  function draw_graph(whichGraph, data){
+    //SVG margins
     var margin = {
       top: 20,
       right: 200,
       bottom: 0,
       left: 20
     },
+    //SVG width and height
     width = 1000;
     height = 500;
 
@@ -58,7 +60,7 @@
     var start_date = new Date(start_str),
     end_date = new Date(end_str);
 
-    //decides colours of the circles.
+    //decides colours of the circles
     var c = d3.scale.category20c();
 
     //define a time scale with the range 0 - width and map the domain start_date,end_date on it
@@ -72,10 +74,11 @@
     .ticks(7)
     .orient("top");
 
+    //Controls what appears for each tick label
     xAxis.tickFormat(date_format());
 
     //Append the svg to the body
-    var svg = d3.select("#chart_line svg")
+    var svg = d3.select(whichGraph)
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .style("margin-left", margin.left + "px")
@@ -85,11 +88,10 @@
     //Append the svg axis
     svg.append("g")
     .attr("class", "x axis")
-    // .attr("transform", "translate(0," + top + ")")
     .call(xAxis);
 
     for (var j = 0; j < data.length; j++) {
-      var g = svg.append("g").attr("class", "journal");
+      var g = svg.append("g");
 
       var circles = g.selectAll("circle")
       .data(data[j].values)
@@ -122,12 +124,25 @@
       })
       .attr("cy", j * 20 + 20)
       .attr("r", function(d) {
-        // console.log(d);
+        console.log("rScale ");
+        console.log(d);
+
+        switch(whichGraph){
+          case "#chart_line svg":
         //This is to avoid the -infinity error.
         if(d.change == 0)
         return 1;
         else
         return rScale(d.y);
+        break;
+        case "#chart_line_changeset svg":
+        if(d.change == 0)
+        return 1;
+        else
+        return rScale(d.change);
+        break;
+
+      }
       })
       .style("fill", function(d) {
         return c(j);
@@ -144,13 +159,22 @@
       })
       .text(function(d) {
         // console.log(d);
-        return d.change;
+        switch(whichGraph){
+          case "#chart_line svg":
+            return d.y;
+        break;
+        case "#chart_line_changeset svg":
+            return d.change;
+        break;
+
+      }
       })
       .style("fill", function(d) {
         return c(j);
       })
       .style("display", "none");
 
+//Append osm editors names to the right of the SVG=============================
       g.append("text")
       .attr("y", j * 20 + 25)
       .attr("x", width + 20)
@@ -162,38 +186,46 @@
       .on("mouseover", mouseover)
       .on("mouseout", mouseout);
 
+//Mouseover and Mouseout over ticks============================================
       d3.select('.x')
       .selectAll('.tick.major')
-      .on('mouseover',tickMouseover)
+      .on('mouseover',tickMouseover);
 
       d3.select('.x')
       .selectAll('.tick.major')
-      .on('mouseout',tickMouseout)
+      .on('mouseout',tickMouseout);
+//=============================================================================
 
     };
 
+    $('#chart_line').removeClass("loading");
+    $('#chart_line_changeset').removeClass("loading");
+
     function tickMouseover(p, i){
+      console.log("tickMouseover");
       d3.selectAll(".circleColumn" + i).style("display", "none");
       d3.selectAll(".circleTextColumn" + i).style("display", "block");
     }
 
     function tickMouseout(p, i){
+      console.log("tickMouseout");
       d3.selectAll(".circleColumn" + i).style("display", "block");
       d3.selectAll(".circleTextColumn" + i).style("display", "none");
     }
 
     function mouseover(p) {
+      console.log('mouseover');
       var g = d3.select(this).node().parentNode;
       d3.select(g).selectAll("circle").style("display", "none");
       d3.select(g).selectAll("text.value").style("display", "block");
     }
 
     function mouseout(p) {
+      console.log('mouseout');
       var g = d3.select(this).node().parentNode;
       d3.select(g).selectAll("circle").style("display", "block");
       d3.select(g).selectAll("text.value").style("display", "none");
     }
-    $('#chart_line').removeClass("loading");
   }
 
 
@@ -496,9 +528,9 @@
               json_obj.push(val);
             });
             //first graph
-            draw_line(json_obj);
+            draw_graph("#chart_line svg", json_obj);
             //second graph
-            draw_line_changeset(JSON.parse(JSON.stringify(json_obj)));
+            draw_graph("#chart_line_changeset svg",JSON.parse(JSON.stringify(json_obj)));
           }
         });
         $('#chart_line').addClass("loading");
