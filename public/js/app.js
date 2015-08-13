@@ -129,20 +129,20 @@
 
         switch(whichGraph){
           case "#chart_line svg":
-        //This is to avoid the -infinity error.
-        if(d.change == 0)
-        return 1;
-        else
-        return rScale(d.y);
-        break;
-        case "#chart_line_changeset svg":
-        if(d.change == 0)
-        return 1;
-        else
-        return rScale(d.change);
-        break;
+          //This is to avoid the -infinity error.
+          if(d.change == 0)
+          return 1;
+          else
+          return rScale(d.y);
+          break;
+          case "#chart_line_changeset svg":
+          if(d.change == 0)
+          return 1;
+          else
+          return rScale(d.change);
+          break;
 
-      }
+        }
       })
       .style("fill", function(d) {
         return c(j);
@@ -161,20 +161,20 @@
         // console.log(d);
         switch(whichGraph){
           case "#chart_line svg":
-            return d.y;
-        break;
-        case "#chart_line_changeset svg":
-            return d.change;
-        break;
+          return d.y;
+          break;
+          case "#chart_line_changeset svg":
+          return d.change;
+          break;
 
-      }
+        }
       })
       .style("fill", function(d) {
         return c(j);
       })
       .style("display", "none");
 
-//Append osm editors names to the right of the SVG=============================
+      //Append osm editors names to the right of the SVG=============================
       g.append("text")
       .attr("y", j * 20 + 25)
       .attr("x", width + 20)
@@ -186,7 +186,7 @@
       .on("mouseover", mouseover)
       .on("mouseout", mouseout);
 
-//Mouseover and Mouseout over ticks============================================
+      //Mouseover and Mouseout over ticks============================================
       d3.select('.x')
       .selectAll('.tick.major')
       .on('mouseover',tickMouseover);
@@ -194,7 +194,7 @@
       d3.select('.x')
       .selectAll('.tick.major')
       .on('mouseout',tickMouseout);
-//=============================================================================
+      //=============================================================================
 
     };
 
@@ -287,6 +287,7 @@
   $(document).ready(function() {
     $('.from').val(dates[1]);
     $('.to').val(dates[2]);
+
     $(".from").datepicker({
       weekStart: 1,
       dateFormat: 'yy-mm-dd',
@@ -372,11 +373,15 @@
       draw();
     });
     $(".dropdown-menu li a").click(function() {
+      console.log("drop down menu");
       var selText = $(this).text();
+      console.log("selText " + selText);
       type = $(this).attr("id");
+      console.log("type " + type);
       $(this).parents('.btn-group').find('.dropdown-toggle').html(selText + ' <span class="caret"></span>');
       draw();
       setTimeout(function() {
+        console.log("location.URL start_str: " + start_str + "  type: " + type + " end_str " + end_str);
         location.href = document.URL.split('#')[0] + '#' + type + '&' + start_str + '&' + end_str;
       }, 200);
     });
