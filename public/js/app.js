@@ -187,11 +187,11 @@
       .on("mouseout", mouseout);
 
       //Mouseover and Mouseout over ticks============================================
-      d3.select('.x')
+      d3.selectAll('.x')
       .selectAll('.tick.major')
       .on('mouseover',tickMouseover);
 
-      d3.select('.x')
+      d3.selectAll('.x')
       .selectAll('.tick.major')
       .on('mouseout',tickMouseout);
       //=============================================================================
