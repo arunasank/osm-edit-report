@@ -196,49 +196,6 @@
     $('#chart_line').removeClass("loading");
   }
 
-  function draw_line_changeset(data) {
-    // console.log(data);
-    _.each(data, function(val, key) {
-      _.each(val.values, function(v) {
-        v.y = v.change;
-        v.x = new Date(v.x);
-      });
-    });
-    var chart;
-    var nv_line = nv;
-    nv_line.addGraph(function() {
-      var chart;
-      chart = nv_line.models.lineChart().useInteractiveGuideline(true);
-      chart
-      .x(function(d, i) {
-        return d.x;
-      });
-      chart.margin({
-        right: 63,
-        left: 35
-      });
-      chart.xAxis
-      .axisLabel('Date')
-      .tickFormat(
-        date_format()
-      );
-      date_xaxis = _.uniq(date_xaxis);
-      if (date_xaxis.length > 10) {
-        date_xaxis = _.each(date_xaxis, function(v, k) {
-          return k % 2 == 0;
-        });
-      }
-      chart.xAxis.tickValues(date_xaxis);
-      chart.yAxis.tickFormat(d3.format(',.H'));
-      d3.select('#chart_line_changeset svg')
-      .datum(data)
-      .transition().duration(500)
-      .call(chart);
-      nv_line.utils.windowResize(chart.update);
-      return chart;
-    });
-    $('#chart_line_changeset').removeClass("loading");
-  }
 
   function date_format() {
     var formatter;
