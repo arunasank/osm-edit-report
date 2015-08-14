@@ -253,7 +253,7 @@
       //Append osm editors names to the right of the SVG=============================
       g.append("text")
       .attr("y", j * 20 + 25)
-      .attr("x", width + 20)
+      .attr("x", width + 60)
       .attr("class", "label")
       .text(truncate(data[j].key, 30, "..."))
       .style("fill", function(d) {
