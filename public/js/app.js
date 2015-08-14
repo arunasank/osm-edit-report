@@ -409,14 +409,6 @@
     draw();
   });
 
-  function todate(timestamp) {
-    var date = new Date(timestamp * 1000);
-    var year = date.getFullYear();
-    var month = date.getMonth() + 1;
-    var day = date.getDate();
-    return year + '-' + month + '-' + day;
-  }
-
   function draw() {
     start_str = $('.from').val();
     start_times = Date.UTC(parseInt(start_str.split('-')[0]), parseInt(start_str.split('-')[1]) - 1, parseInt(start_str.split('-')[2])) / 1000;
