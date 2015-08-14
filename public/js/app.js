@@ -137,7 +137,6 @@
     .scale(x)
     .ticks(no_of_ticks)
     .tickFormat(function(d, i){
-
       switch (type) {
         case 'h':
         return d3.time.format.utc('%a %d %H%p')(new Date(dateTickValues[i]));
@@ -420,8 +419,8 @@
     } else {
       switch (type) {
         case 'h':
-        if ((end_times - start_times) > 8 * 24 * 3600) {
-          $("#span-warning").text(' This is a weekly edit report. Please select a 7 day duration or lesser.');
+        if ((end_times - start_times) > 24 * 3600) {
+          $("#span-warning").text(' Per hour stats are only available for one day. ');
           $('#error-warning').show();
           setTimeout(function() {
             $('#error-warning').hide();
@@ -430,8 +429,8 @@
         }
         break;
         case 'd':
-        if ((end_times - start_times) > 8 * 24 * 3600) {
-          $("#span-warning").text(' This is a weekly edit report. Please select a 7 day duration or lesser.');
+        if ((end_times - start_times) > 7 * 24 * 3600) {
+          $("#span-warning").text(' Per day stats are available only for 7 day durations. ');
           $('#error-warning').show();
           setTimeout(function() {
             $('#error-warning').hide();
