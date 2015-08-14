@@ -64,18 +64,96 @@
     var c = d3.scale.category20c();
 
     //define a time scale with the range 0 - width and map the domain start_date,end_date on it
-    var x = d3.time.scale.utc()
-    .domain([start_date, end_date])
+    var no_of_ticks = 0;
+    var dateTickValues = [];
+    var limit;
+    switch(type){
+      case 'h':
+      no_of_ticks = 24;
+      //new Date(JSON.parse(JSON.stringify(start_date))) done to shallow copy
+      //the start_date value into dateTickValues. If
+      //dateTickValues[index] = start_date; is done
+      //It amounts to a deep copy. Array elements get overwritten with the
+      //latest value of start_date which is pointless.
+      console.log("hours : " + start_date.getTime())
+      dateTickValues[0] = new Date(JSON.parse(JSON.stringify(start_date)));
+      break;
+      case 'd':
+      no_of_ticks = end_date.getDate() - start_date.getDate();
+      limit = end_date.getDate() - start_date.getDate();
+      for(var index = 0;index <= limit;index++){
+        //new Date(JSON.parse(JSON.stringify(start_date))) done to shallow copy
+        //the start_date value into dateTickValues. If
+        //dateTickValues[index] = start_date; is done
+        //It amounts to a deep copy. Array elements get overwritten with the
+        //latest value of start_date which is pointless.
+        dateTickValues[index] = new Date(JSON.parse(JSON.stringify(start_date)));
+        start_date.setDate(start_date.getDate() + 1);
+      }
+      break;
+      case 'm':
+      no_of_ticks = end_date.getMonth() - start_date.getMonth();
+      limit = end_date.getMonth() - start_date.getMonth();
+      for(var index = 0;index <= limit;index++){
+        //new Date(JSON.parse(JSON.stringify(start_date))) done to shallow copy
+        //the start_date value into dateTickValues. If
+        //dateTickValues[index] = start_date; is done
+        //It amounts to a deep copy. Array elements get overwritten with the
+        //latest value of start_date which is pointless.
+        dateTickValues[index] = new Date(JSON.parse(JSON.stringify(start_date)));
+        start_date.setMonth(start_date.getMonth() + 1);
+      }
+      break;
+      case 'y':
+      no_of_ticks = end_date.getFullYear() - start_date.getFullYear();
+      limit = end_date.getFullYear() - start_date.getFullYear();
+      for(var index = 0;index <= limit;index++){
+        //new Date(JSON.parse(JSON.stringify(start_date))) done to shallow copy
+        //the start_date value into dateTickValues. If
+        //dateTickValues[index] = start_date; is done
+        //It amounts to a deep copy. Array elements get overwritten with the
+        //latest value of start_date which is pointless..
+        dateTickValues[index] = new Date(JSON.parse(JSON.stringify(start_date)));
+        start_date.setYear(start_date.getFullYear() + 1);
+      }
+      break;
+    }
+
+    //If the no_of_ticks = 0 for example when start_date = end_date, ensure that
+    //at least one tick is present for values to appear under.
+    no_of_ticks = (no_of_ticks < 1) ? 1 : no_of_ticks;
+    //If the graph has only one tick(when looking at data for just 2015, or when
+    //start_date = end_date), then there is only one tick label which means that
+    //the right end of the graph has no tick label. To solve this, have two
+    //tick labels alone, and push the same value twice into dateTickValues
+    dateTickValues[1] = (dateTickValues.length == 1) ? dateTickValues[0] : dateTickValues [1];
+
+    var x = d3.scale.linear()
+    .domain([0, no_of_ticks])
     .range([0, width]);
 
     //create axis with the above defined time scale and orient it on top(x axis on top).
     var xAxis = d3.svg.axis()
     .scale(x)
-    .ticks(7)
-    .orient("top");
+    .ticks(no_of_ticks)
+    .tickFormat(function(d, i){
 
-    //Controls what appears for each tick label
-    xAxis.tickFormat(date_format());
+      switch (type) {
+        case 'h':
+        return d3.time.format.utc('%a %d %H%p')(new Date(dateTickValues[i]));
+        break;
+        case 'd':
+        return d3.time.format.utc('%a:%d %b')(new Date(dateTickValues[i]));
+        break;
+        case 'm':
+        return d3.time.format.utc('%b %Y')(new Date(dateTickValues[i]));
+        break;
+        case 'y':
+        return d3.time.format.utc('%Y')(new Date(dateTickValues[i]));
+        break;
+      }
+    })
+    .orient("top");
 
     //Append the svg to the body
     var svg = d3.select(whichGraph)
@@ -113,9 +191,7 @@
 
       circles
       .attr("cx", function(d, i) {
-        // console.log(new Date(d.x));
-        // console.log("cx " + x(new Date(d.x)))
-        return x(new Date(d.x));
+        return (width/no_of_ticks) * i;
       })
       .attr('class',function(d, i) {
         // console.log(new Date(d.x));
@@ -152,7 +228,7 @@
       .attr("y", j * 20 + 25)
       .attr("x", function(d, i) {
         // console.log('d', d);
-        return x(new Date(d.x)) - 5;
+        return (width/no_of_ticks) * i - 5;
       })
       .attr("class", function(d, i) {
         return 'circleTextColumn' + i + " value";
@@ -226,62 +302,6 @@
       d3.select(g).selectAll("circle").style("display", "block");
       d3.select(g).selectAll("text.value").style("display", "none");
     }
-  }
-
-
-  function date_format() {
-    var formatter;
-    switch (type) {
-      case 'h':
-      //per hour
-      formatter = function(d, i) {
-        if (typeof d === 'object') {
-          var date = new Date(d);
-          return d3.time.format.utc('%a %d %H%p')(date);
-        } else {
-          var date = new Date(d);
-          return d3.time.format.utc('%H%p')(date);
-        }
-      }
-      break;
-      case 'd':
-      //per day
-      formatter = function(d, i) {
-        if (typeof d === 'object') {
-          var date = new Date(d);
-          return d3.time.format.utc('%a:%d %b')(date);
-        } else {
-          var date = new Date(d);
-          return d3.time.format.utc('%a:%d-%b')(date);
-        }
-      }
-      break;
-      case 'm':
-      // per month
-      formatter = function(d, i) {
-        if (typeof d === 'object') {
-          var date = new Date(d);
-          return d3.time.format.utc('%b %Y')(date);
-        } else {
-          var date = new Date(d);
-          return d3.time.format.utc('%b %Y')(date);
-        }
-      }
-      break;
-      case 'y':
-      // per year
-      formatter = function(d, i) {
-        if (typeof d === 'object') {
-          var date = new Date(d);
-          return d3.time.format.utc('%Y')(date);
-        } else {
-          var date = new Date(d);
-          return d3.time.format.utc('%Y')(date);
-        }
-      }
-      break;
-    }
-    return formatter;
   }
 
   $(document).ready(function() {
