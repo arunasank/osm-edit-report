@@ -130,13 +130,13 @@
         switch(whichGraph){
           case "#chart_line svg":
           //This is to avoid the -infinity error.
-          if(d.change == 0)
+          if(d.y == 0 || d.y == null)
           return 1;
           else
           return rScale(d.y);
           break;
           case "#chart_line_changeset svg":
-          if(d.change == 0)
+          if(d.change == 0 || d.change == null)
           return 1;
           else
           return rScale(d.change);
