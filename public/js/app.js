@@ -69,14 +69,22 @@
     var limit;
     switch(type){
       case 'h':
-      no_of_ticks = 24;
+      no_of_ticks = 23;
       //new Date(JSON.parse(JSON.stringify(start_date))) done to shallow copy
       //the start_date value into dateTickValues. If
       //dateTickValues[index] = start_date; is done
       //It amounts to a deep copy. Array elements get overwritten with the
       //latest value of start_date which is pointless.
-      console.log("hours : " + start_date.getTime())
-      dateTickValues[0] = new Date(JSON.parse(JSON.stringify(start_date)));
+      limit = 23;
+      for(var index = 0;index <= limit;index++){
+        //new Date(JSON.parse(JSON.stringify(start_date))) done to shallow copy
+        //the start_date value into dateTickValues. If
+        //dateTickValues[index] = start_date; is done
+        //It amounts to a deep copy. Array elements get overwritten with the
+        //latest value of start_date which is pointless.
+        dateTickValues[index] = new Date(JSON.parse(JSON.stringify(start_date)));
+        start_date.setHours(start_date.getHours() + 1);
+      }
       break;
       case 'd':
       no_of_ticks = end_date.getDate() - start_date.getDate();
@@ -139,7 +147,7 @@
     .tickFormat(function(d, i){
       switch (type) {
         case 'h':
-        return d3.time.format.utc('%a %d %H%p')(new Date(dateTickValues[i]));
+        return d3.time.format.utc('%I%p')(new Date(dateTickValues[i]));
         break;
         case 'd':
         return d3.time.format.utc('%a:%d %b')(new Date(dateTickValues[i]));
