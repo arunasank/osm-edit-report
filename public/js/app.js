@@ -439,7 +439,7 @@
         }
         break;
         case 'd':
-        if ((end_times - start_times) > 7 * 24 * 3600) {
+        if ((end_times - start_times) > 8 * 24 * 3600) {
           $("#span-warning").text(' Per day stats are available only for 7 day durations. ');
           $('#error-warning').show();
           setTimeout(function() {
