@@ -87,17 +87,19 @@
       }
       break;
       case 'd':
-      no_of_ticks = end_date.getDate() - start_date.getDate();
-      limit = end_date.getDate() - start_date.getDate();
-      for(var index = 0;index <= limit;index++){
+      limit = 0;
+      for(var index = start_date.getTime();index <= end_date.getTime();){
         //new Date(JSON.parse(JSON.stringify(start_date))) done to shallow copy
         //the start_date value into dateTickValues. If
         //dateTickValues[index] = start_date; is done
         //It amounts to a deep copy. Array elements get overwritten with the
         //latest value of start_date which is pointless.
-        dateTickValues[index] = new Date(JSON.parse(JSON.stringify(start_date)));
+        dateTickValues[limit] = new Date(JSON.parse(JSON.stringify(start_date)));
         start_date.setDate(start_date.getDate() + 1);
+        index = start_date.getTime();
+        limit+=1;
       }
+      no_of_ticks = limit - 1;
       break;
       case 'm':
       no_of_ticks = end_date.getMonth() - start_date.getMonth();
